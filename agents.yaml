@@ -1,0 +1,29 @@
+agents:
+  profiler_agent:
+    python_tool: insight.profiler:run
+  planner_agent:
+    python_tool: insight.chart_planner:run
+  figure_agent:
+    python_tool: insight.visual_builder:run
+  forecast_agent:
+    python_tool: insight.forecaster:run
+  writer_agent:
+    python_tool: insight.insight_writer:run
+  composer_agent:
+    python_tool: insight.pdf_composer:run
+
+supervisor:
+  flow:
+    - from: profiler_agent
+      to:
+        - planner_agent
+        - forecast_agent
+    - from:
+        - planner_agent
+        - forecast_agent
+      to: figure_agent
+    - from: figure_agent
+      to: writer_agent
+    - from: writer_agent
+      to: composer_agent
+  retries: 1
